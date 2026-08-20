@@ -1,6 +1,12 @@
 """Unit tests for agents, supervisor routing, and multi-agent workflow."""
 
-from multi_agent_research_lab.agents import AnalystAgent, CriticAgent, ResearcherAgent, SupervisorAgent, WriterAgent
+from multi_agent_research_lab.agents import (
+    AnalystAgent,
+    CriticAgent,
+    ResearcherAgent,
+    SupervisorAgent,
+    WriterAgent,
+)
 from multi_agent_research_lab.core.schemas import AgentName, ResearchQuery
 from multi_agent_research_lab.core.state import ResearchState
 from multi_agent_research_lab.graph.workflow import MultiAgentWorkflow

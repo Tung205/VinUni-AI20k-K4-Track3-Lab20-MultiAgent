@@ -103,7 +103,11 @@ class SearchClient:
 
     def search(self, query: str, max_results: int = 5) -> list[SourceDocument]:
         """Search for documents relevant to a query with fallback."""
-        if self.api_key and not self.api_key.startswith("tvly-placeholder") and len(self.api_key) > 5:
+        if (
+            self.api_key
+            and not self.api_key.startswith("tvly-placeholder")
+            and len(self.api_key) > 5
+        ):
             try:
                 return self._search_tavily(query, max_results=max_results)
             except Exception as exc:

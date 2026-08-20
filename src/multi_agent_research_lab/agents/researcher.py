@@ -12,7 +12,9 @@ class ResearcherAgent(BaseAgent):
 
     name = "researcher"
 
-    def __init__(self, search_client: SearchClient | None = None, llm_client: LLMClient | None = None) -> None:
+    def __init__(
+        self, search_client: SearchClient | None = None, llm_client: LLMClient | None = None
+    ) -> None:
         self.search_client = search_client or SearchClient()
         self.llm_client = llm_client or LLMClient()
 
@@ -23,7 +25,7 @@ class ResearcherAgent(BaseAgent):
         state.sources = sources
 
         context_str = "\n\n".join(
-            f"Source [{i+1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
+            f"Source [{i + 1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
             for i, s in enumerate(sources)
         )
 

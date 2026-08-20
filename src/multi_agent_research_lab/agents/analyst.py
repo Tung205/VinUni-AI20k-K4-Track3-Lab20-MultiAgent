@@ -18,7 +18,7 @@ class AnalystAgent(BaseAgent):
         """Populate `state.analysis_notes`."""
         notes = state.research_notes or "No raw notes available."
         sources_summary = "\n".join(
-            f"- [{i+1}] {s.title} (Relevance: {s.metadata.get('relevance', 'N/A')})"
+            f"- [{i + 1}] {s.title} (Relevance: {s.metadata.get('relevance', 'N/A')})"
             for i, s in enumerate(state.sources)
         )
 

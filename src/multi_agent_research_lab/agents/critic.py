@@ -20,7 +20,7 @@ class CriticAgent(BaseAgent):
             "You are a Rigorous Fact-Checking and Quality Assurance Critic. "
             "Examine the final answer, verify citation alignment against the sources, and check for hallucinations."
         )
-        sources_summary = "\n".join(f"[{i+1}] {s.title}" for i, s in enumerate(state.sources))
+        sources_summary = "\n".join(f"[{i + 1}] {s.title}" for i, s in enumerate(state.sources))
         user_prompt = (
             f"Final Answer:\n{state.final_answer or 'N/A'}\n\n"
             f"Sources:\n{sources_summary}\n\n"

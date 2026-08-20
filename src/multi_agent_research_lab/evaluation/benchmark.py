@@ -24,10 +24,14 @@ def compute_citation_coverage(state: ResearchState) -> float:
     cited_count = 0
 
     for i, source in enumerate(state.sources):
-        idx_markers = [f"[{i+1}]", f"[source {i+1}]", f"source {i+1}"]
+        idx_markers = [f"[{i + 1}]", f"[source {i + 1}]", f"source {i + 1}"]
         url_match = source.url and source.url.lower() in final_text
         title_words = [w for w in re.findall(r"\w+", source.title.lower()) if len(w) > 4]
-        title_match = sum(1 for w in title_words if w in final_text) >= min(2, len(title_words)) if title_words else False
+        title_match = (
+            sum(1 for w in title_words if w in final_text) >= min(2, len(title_words))
+            if title_words
+            else False
+        )
 
         if any(marker in final_text for marker in idx_markers) or url_match or title_match:
             cited_count += 1
@@ -74,7 +78,7 @@ def run_baseline_runner(query: str) -> ResearchState:
     sources = search_client.search(request.query, max_results=request.max_sources)
     state.sources = sources
     context_str = "\n\n".join(
-        f"Source [{i+1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
+        f"Source [{i + 1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
         for i, s in enumerate(sources)
     )
     system_prompt = (

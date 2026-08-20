@@ -57,9 +57,9 @@ def baseline(
         # Single-agent direct query answering with search retrieval
         sources = search_client.search(request.query, max_results=request.max_sources)
         state.sources = sources
-        
+
         context_str = "\n\n".join(
-            f"Source [{i+1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
+            f"Source [{i + 1}] {s.title} ({s.url or 'N/A'}):\n{s.snippet}"
             for i, s in enumerate(sources)
         )
         system_prompt = (
@@ -67,7 +67,7 @@ def baseline(
             "provide a complete, comprehensive, and well-cited technical answer."
         )
         user_prompt = f"Query: {request.query}\n\nContext:\n{context_str}"
-        
+
         response = llm.complete(system_prompt=system_prompt, user_prompt=user_prompt)
         state.final_answer = response.content
         latency = timer()
@@ -86,7 +86,9 @@ def baseline(
         },
     )
 
-    console.print(Panel.fit(state.final_answer, title=f"Single-Agent Baseline Response: {request.query}"))
+    console.print(
+        Panel.fit(state.final_answer, title=f"Single-Agent Baseline Response: {request.query}")
+    )
     console.print(
         Panel.fit(
             f"[bold cyan]Latency:[/bold cyan] {latency:.3f}s | "
@@ -118,14 +120,23 @@ def multi_agent(
 
 @app.command("benchmark")
 def benchmark_cmd(
-    query: Annotated[str, typer.Option("--query", "-q", help="Research query")] = "Research GraphRAG state-of-the-art",
-    output_file: Annotated[str, typer.Option("--output", "-o", help="Report output file")] = "reports/benchmark_report.md",
+    query: Annotated[
+        str, typer.Option("--query", "-q", help="Research query")
+    ] = "Research GraphRAG state-of-the-art",
+    output_file: Annotated[
+        str, typer.Option("--output", "-o", help="Report output file")
+    ] = "reports/benchmark_report.md",
 ) -> None:
     """Run benchmark comparing single-agent baseline vs multi-agent workflow and generate report."""
 
     _init()
     from pathlib import Path
-    from multi_agent_research_lab.evaluation.benchmark import run_baseline_runner, run_benchmark, run_multi_agent_runner
+
+    from multi_agent_research_lab.evaluation.benchmark import (
+        run_baseline_runner,
+        run_benchmark,
+        run_multi_agent_runner,
+    )
     from multi_agent_research_lab.evaluation.report import render_markdown_report
 
     console.print(f"[bold green]Running Baseline on:[/bold green] {query}")

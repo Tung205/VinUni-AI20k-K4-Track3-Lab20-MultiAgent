@@ -31,14 +31,13 @@ def trace_span(name: str, attributes: dict[str, Any] | None = None) -> Iterator[
     }
 
     # Optional LangSmith integration if configured
-    langsmith_client = None
     if settings.langsmith_api_key or os.getenv("LANGSMITH_API_KEY"):
         try:
             import langsmith
 
-            langsmith_client = langsmith.Client()
+            _ = langsmith.Client()
         except Exception:
-            langsmith_client = None
+            pass
 
     try:
         yield span
@@ -49,4 +48,6 @@ def trace_span(name: str, attributes: dict[str, Any] | None = None) -> Iterator[
         raise
     finally:
         span["duration_seconds"] = perf_counter() - started
-        logger.debug(f"[TraceSpan] {name} completed in {span['duration_seconds']:.4f}s ({span['status']})")
+        logger.debug(
+            f"[TraceSpan] {name} completed in {span['duration_seconds']:.4f}s ({span['status']})"
+        )

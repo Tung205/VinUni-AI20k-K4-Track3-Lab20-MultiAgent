@@ -32,7 +32,11 @@ class LLMClient:
         self.api_key = api_key or settings.openai_api_key or os.getenv("OPENAI_API_KEY")
 
         self._openai_client: Any | None = None
-        if self.api_key and not self.api_key.startswith("sk-placeholder") and len(self.api_key) > 10:
+        if (
+            self.api_key
+            and not self.api_key.startswith("sk-placeholder")
+            and len(self.api_key) > 10
+        ):
             try:
                 from openai import OpenAI
 
@@ -50,7 +54,9 @@ class LLMClient:
         else:
             return (input_tokens * 0.50 + output_tokens * 1.50) / 1_000_000
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10), reraise=True)
+    @retry(
+        stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10), reraise=True
+    )
     def _call_openai(self, system_prompt: str, user_prompt: str) -> LLMResponse:
         assert self._openai_client is not None
         response = self._openai_client.chat.completions.create(
@@ -62,7 +68,11 @@ class LLMClient:
             temperature=0.2,
         )
         content = response.choices[0].message.content or ""
-        in_tokens = response.usage.prompt_tokens if response.usage else len(system_prompt + user_prompt) // 4
+        in_tokens = (
+            response.usage.prompt_tokens
+            if response.usage
+            else len(system_prompt + user_prompt) // 4
+        )
         out_tokens = response.usage.completion_tokens if response.usage else len(content) // 4
         cost = self._estimate_cost(in_tokens, out_tokens)
         return LLMResponse(
@@ -75,8 +85,12 @@ class LLMClient:
     def _generate_mock_response(self, system_prompt: str, user_prompt: str) -> LLMResponse:
         """Generate a realistic structured completion for local testing and offline execution."""
         prompt_lower = (system_prompt + " " + user_prompt).lower()
-        
-        if "researcher" in prompt_lower or "gather" in prompt_lower or "extract facts" in prompt_lower:
+
+        if (
+            "researcher" in prompt_lower
+            or "gather" in prompt_lower
+            or "extract facts" in prompt_lower
+        ):
             content = (
                 "### Research Findings & Key Citations\n\n"
                 "1. **Architecture & Design**: Recent advances in retrieval-augmented generation (RAG) demonstrate "
@@ -87,7 +101,11 @@ class LLMClient:
                 "and holistic corpus understanding, despite a higher upfront indexing cost [Source 3].\n"
                 "4. **Trade-offs**: Graph construction requires higher LLM compute during ingestion, but lowers query-time ambiguity."
             )
-        elif "analyst" in prompt_lower or "synthesize claims" in prompt_lower or "evaluate" in prompt_lower:
+        elif (
+            "analyst" in prompt_lower
+            or "synthesize claims" in prompt_lower
+            or "evaluate" in prompt_lower
+        ):
             content = (
                 "### Comparative Analysis & Evidence Assessment\n\n"
                 "- **Core Strengths**: GraphRAG bridges semantic gaps by indexing relationships across disparate documents, "
@@ -97,7 +115,11 @@ class LLMClient:
                 "- **Bottlenecks & Limitations**: High indexing latency, graph construction token costs, and graph update overhead when datasets are frequently mutated.\n"
                 "- **Recommendation**: Utilize hybrid retrieval combining dense vector similarity for localized lookups and graph communities for corpus-level synthesis."
             )
-        elif "writer" in prompt_lower or "final answer" in prompt_lower or "final response" in prompt_lower:
+        elif (
+            "writer" in prompt_lower
+            or "final answer" in prompt_lower
+            or "final response" in prompt_lower
+        ):
             content = (
                 "# Comprehensive Research Report: State-of-the-Art GraphRAG\n\n"
                 "## Executive Summary\n"

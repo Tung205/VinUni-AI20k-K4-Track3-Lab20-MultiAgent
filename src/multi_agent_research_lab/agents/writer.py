@@ -17,7 +17,7 @@ class WriterAgent(BaseAgent):
     def run(self, state: ResearchState) -> ResearchState:
         """Populate `state.final_answer`."""
         sources_text = "\n".join(
-            f"[{i+1}] {s.title} ({s.url or 'N/A'})\nSnippet: {s.snippet}"
+            f"[{i + 1}] {s.title} ({s.url or 'N/A'})\nSnippet: {s.snippet}"
             for i, s in enumerate(state.sources)
         )
 
